@@ -1,12 +1,14 @@
 from datetime import date, timedelta
 from django.test import TestCase
 
+from tasks.models import Task
+
 
 class TaskModelTest(TestCase):
-    """Тестирование модели Task"""
+    """Task model testing"""
 
     def test_task_object_was_created(self):
-        """тест: объект task создается"""
+        """test: task model was created"""
         task1 = Task.objects.create(
             title='title',
             description='description',
@@ -18,6 +20,6 @@ class TaskModelTest(TestCase):
         self.assertEqual(task2.title, 'test')
         self.assertEqual(task1.title, 'title')
         self.assertEqual(task1.description, 'description')
-        self.assertEqual(task1.date_of_creation, 'test')
-        self.assertEqual(task1.status, 'test')
+        self.assertEqual(task1.date_of_creation, date.today())
+        self.assertEqual(task1.status, 'new')
         self.assertEqual(task1.planned_completion_date, date.today() + timedelta(days=10))
