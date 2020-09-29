@@ -1,7 +1,7 @@
 from datetime import date, timedelta, datetime
 from django.contrib.auth.models import User
 from django.test import TestCase
-from tasks.models import Task
+from tasks.models import Task, History
 
 
 class TaskModelTest(TestCase):
@@ -48,5 +48,6 @@ class HistoryModelTest(TestCase):
         history1 = History.objects.last()
         self.assertEqual(history1.title, 'another title')
         self.assertEqual(history1.description, 'another description')
+        self.assertEqual(history1.date_of_creation, task.date_of_creation)
         self.assertEqual(history1.status, 'planned')
-        self.assertEqual(history1.planned_completion_date, date.today() + timedelta(days=20))
+        self.assertEqual(history1.planned_completion_date, task.planned_completion_date)

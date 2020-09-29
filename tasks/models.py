@@ -19,6 +19,19 @@ class Task(models.Model):
     planned_completion_date = models.DateField(verbose_name='planned task completion date', null=True, blank=True)
     user = models.ForeignKey(verbose_name='task owner', to=User, related_name='tasks', on_delete=models.CASCADE)
 
+    def save(self, *args, **kwargs):
+        """history object created when the task object is saved"""
+        super(Task, self).save(*args, **kwargs)
+        History.objects.create(
+            task=self,
+            title=self.title,
+            description=self.description,
+            date_of_creation=self.date_of_creation,
+            status=self.status,
+            planned_completion_date=self.planned_completion_date,
+            user=self.user
+        )
+
 
 class History(models.Model):
     """Model for saved changes in user tasks"""
@@ -28,6 +41,9 @@ class History(models.Model):
                              on_delete=models.CASCADE)
     title = models.CharField(verbose_name='changed task title', max_length=32, null=True)
     description = models.TextField(verbose_name='changed task description', null=True)
+    date_of_creation = models.DateField(verbose_name='date of task creation', auto_now_add=True)
     status = models.CharField(verbose_name='changed task status', max_length=11, null=True)
     planned_completion_date = models.DateField(verbose_name='changed planned task completion date',
                                                null=True, blank=True)
+    user = models.ForeignKey(verbose_name='task history owner', to=User, related_name='histories',
+                             on_delete=models.CASCADE)
