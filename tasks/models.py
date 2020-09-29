@@ -1,4 +1,5 @@
 from django.db import models
+from django.contrib.auth.models import User
 
 
 class Task(models.Model):
@@ -15,4 +16,4 @@ class Task(models.Model):
     date_of_creation = models.DateField(verbose_name='date of task creation', auto_now_add=True)
     status = models.CharField(verbose_name='task status', max_length=11, choices=status_choices)
     planned_completion_date = models.DateField(verbose_name='planned task completion date', null=True, blank=True)
-    # user = models.ForeignKey(verbose_name='task owner', to='User', related_name='tasks', on_delete=models.CASCADE)
+    user = models.ForeignKey(verbose_name='task owner', to=User, related_name='tasks', on_delete=models.CASCADE)
