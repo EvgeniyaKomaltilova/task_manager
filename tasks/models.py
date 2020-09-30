@@ -37,7 +37,7 @@ class History(models.Model):
     """Model for saved changes in user tasks"""
 
     date_of_change = models.DateTimeField(verbose_name='date when the task was changed', auto_now_add=True)
-    task = models.ForeignKey(verbose_name='task whose history is stored', to=Task, related_name='tasks',
+    task = models.ForeignKey(verbose_name='task whose history is stored', to=Task, related_name='history',
                              on_delete=models.CASCADE)
     title = models.CharField(verbose_name='changed task title', max_length=32, null=True)
     description = models.TextField(verbose_name='changed task description', null=True)
@@ -47,3 +47,6 @@ class History(models.Model):
                                                null=True, blank=True)
     user = models.ForeignKey(verbose_name='task history owner', to=User, related_name='histories',
                              on_delete=models.CASCADE)
+
+    def __str__(self):
+        return f'{self.user}-{self.title}-{self.date_of_change}'

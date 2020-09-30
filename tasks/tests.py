@@ -1,4 +1,6 @@
-from datetime import date, timedelta, datetime
+import json
+from datetime import date, timedelta
+import requests
 from django.contrib.auth.models import User
 from django.test import TestCase
 from tasks.models import Task, History
@@ -51,3 +53,44 @@ class HistoryModelTest(TestCase):
         self.assertEqual(history1.date_of_creation, task.date_of_creation)
         self.assertEqual(history1.status, 'planned')
         self.assertEqual(history1.planned_completion_date, task.planned_completion_date)
+
+
+class TaskApiTest(TestCase):
+    """Testing task api"""
+
+    def test_task_created_by_post_request(self):
+        """test: task object was created after post request"""
+
+        user = User.objects._create_user(username='user', password='password', email='none@no.ne')
+        # user.set_password('password1')
+        # user.save()
+        print(f'user: {user.username}')
+        print(f'password: {user.password}')
+        token_url = 'http://127.0.0.1:8000/api-token-auth/'
+        token_headers = {'Content-Type': 'application/json'}
+        # token_data = {'username': user.username, 'password': user.password}
+        token_data = {'username': 'admin', 'password': 'password123'}
+        token_request = requests.post(url=token_url, headers=token_headers, data=json.dumps(token_data))
+        print(token_request.text)
+        token = json.loads(token_request.text)['token']
+        print(token)
+
+        url = 'http://127.0.0.1:8000/api/tasks/'
+        task_headers = {
+            'Authorization': f'JWT {token}',
+            'Content-Type': 'application/json'
+        }
+        dict = {
+            'title': 'title',
+            'description': 'description',
+            'status': 'new',
+            # 'planned_completion_date': date.today() + timedelta(days=10),
+            'user': user.id,
+            'history': None
+        }
+        new_task_request = requests.post(url, data=json.dumps(dict), headers=task_headers)
+        print(new_task_request.text)
+        new_task = json.loads(new_task_request.text)
+        self.assertEqual(new_task['title'], 'title')
+        self.assertEqual(new_task['description'], 'description')
+        self.assertEqual(new_task['status'], 'new')
