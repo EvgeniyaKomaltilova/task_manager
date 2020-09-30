@@ -1,3 +1,4 @@
+from django.contrib.auth.models import User
 from rest_framework import serializers
 from tasks.models import Task
 
@@ -19,3 +20,13 @@ class TaskSerializer(serializers.ModelSerializer):
 
     history = serializers.PrimaryKeyRelatedField(many=True, read_only=True)
 
+
+class UserSerializer(serializers.ModelSerializer):
+    """User model serializer"""
+
+    class Meta:
+        model = User
+        fields = (
+            'username',
+            'password',
+        )

@@ -2,7 +2,8 @@ import json
 from datetime import date, timedelta
 import requests
 from django.contrib.auth.models import User
-from django.test import TestCase
+from django.test import TestCase, LiveServerTestCase
+
 from tasks.models import Task, History
 
 
@@ -55,27 +56,26 @@ class HistoryModelTest(TestCase):
         self.assertEqual(history1.planned_completion_date, task.planned_completion_date)
 
 
-class TaskApiTest(TestCase):
+class TaskApiTest(LiveServerTestCase):
     """Testing task api"""
 
     def test_task_created_by_post_request(self):
         """test: task object was created after post request"""
 
-        user = User.objects._create_user(username='user', password='password', email='none@no.ne')
-        # user.set_password('password1')
-        # user.save()
-        print(f'user: {user.username}')
-        print(f'password: {user.password}')
-        token_url = 'http://127.0.0.1:8000/api-token-auth/'
+        user = User.objects.create(username='user', password='password')
+        user.set_password('password')
+        user.save()
+        print(f'user: user')
+        print(f'password: password')
+        token_url = self.live_server_url + '/api-token-auth/'
         token_headers = {'Content-Type': 'application/json'}
-        # token_data = {'username': user.username, 'password': user.password}
-        token_data = {'username': 'admin', 'password': 'password123'}
+        token_data = {'username': 'user', 'password': 'password'}
         token_request = requests.post(url=token_url, headers=token_headers, data=json.dumps(token_data))
         print(token_request.text)
         token = json.loads(token_request.text)['token']
         print(token)
 
-        url = 'http://127.0.0.1:8000/api/tasks/'
+        url = self.live_server_url + '/api/tasks/'
         task_headers = {
             'Authorization': f'JWT {token}',
             'Content-Type': 'application/json'
@@ -94,3 +94,22 @@ class TaskApiTest(TestCase):
         self.assertEqual(new_task['title'], 'title')
         self.assertEqual(new_task['description'], 'description')
         self.assertEqual(new_task['status'], 'new')
+
+
+class UserApiTest(LiveServerTestCase):
+    """Testing user api"""
+
+    def test_user_created_by_api_request(self):
+        """test: user was created after api post request"""
+
+        url = self.live_server_url + '/api/users/'
+        headers = {'Content-Type': 'application/json'}
+        dict = {
+            'username': 'test_username',
+            'password': 'test_password',
+        }
+        new_user_request = requests.post(url, data=json.dumps(dict), headers=headers)
+        # print(new_user_request.text)
+        user = json.loads(new_user_request.text)
+        self.assertEqual(user['username'], 'test_username')
+        self.assertEqual(user['password'], 'test_password')
