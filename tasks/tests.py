@@ -91,10 +91,10 @@ class TaskApiTest(LiveServerTestCase):
             'Authorization': f'Bearer {token}',
             'Content-Type': 'application/json'
         }
-        task_request = requests.get(url, headers=headers)
-        task = json.loads(task_request.text)
-        self.assertEqual(task['user'], user.id)
-        self.assertEqual(task['title'], 'test')
+        new_task_request = requests.get(url, headers=headers)
+        new_task = json.loads(new_task_request.text)
+        self.assertEqual(new_task['user'], user.id)
+        self.assertEqual(new_task['title'], 'test')
 
     def test_user_can_not_get_foreign_task(self):
         """test: user can't get task owned by someone else"""
@@ -219,6 +219,30 @@ class TaskApiTest(LiveServerTestCase):
 
         number_of_tasks_after_delete = Task.objects.count()
         self.assertEqual(number_of_tasks_before_delete, number_of_tasks_after_delete + 1)
+
+
+class HistoryApiTest(LiveServerTestCase):
+    """Testing history api"""
+
+    def test_user_can_get_task_history_objects(self):
+        """test: user can get history objects to certain task"""
+
+        user = _create_test_user('user', 'password')
+        task = Task.objects.create(user=user)
+        task.save()
+        token = _get_token(self, user)
+
+        url = self.live_server_url + f'/api/history?task={task.id}'
+
+        headers = {
+            'Authorization': f'Bearer {token}',
+            'Content-Type': 'application/json'
+        }
+
+        history_request = requests.get(url, headers=headers)
+        history = json.loads(history_request.text)
+        print(history)
+        self.assertEqual(len(history), 2)
 
 
 class UserApiTest(LiveServerTestCase):
