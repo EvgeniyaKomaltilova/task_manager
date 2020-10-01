@@ -115,7 +115,6 @@ class TaskApiTest(LiveServerTestCase):
         self.assertNotIn('user', task2)
         self.assertNotIn('title', task2)
 
-
     def test_task_created_by_post_request(self):
         """test: task object was created after post request"""
 
@@ -146,7 +145,7 @@ class TaskApiTest(LiveServerTestCase):
         self.assertEqual(new_task['planned_completion_date'], date.today().isoformat())
 
     def test_user_can_update_his_task(self):
-        """test: task object was created after post request"""
+        """test: user can put new data"""
 
         user = _create_test_user('user', 'password')
         token = _get_token(self, user)
@@ -173,6 +172,53 @@ class TaskApiTest(LiveServerTestCase):
         self.assertEqual(new_task['description'], 'description')
         self.assertEqual(new_task['status'], 'new')
         self.assertEqual(new_task['planned_completion_date'], date.today().isoformat())
+
+    def test_user_can_patch_his_task(self):
+        """test: user can patch task object"""
+
+        user = _create_test_user('user', 'password')
+        token = _get_token(self, user)
+        task = Task.objects.create(user=user)
+
+        url = self.live_server_url + f'/api/tasks/{task.id}/'
+
+        task_headers = {
+            'Authorization': f'Bearer {token}',
+            'Content-Type': 'application/json'
+        }
+
+        dict = {
+            'title': 'title',
+            'description': 'description',
+            'status': 'new',
+        }
+
+        new_task_request = requests.patch(url, data=json.dumps(dict), headers=task_headers)
+        new_task = json.loads(new_task_request.text)
+        self.assertEqual(new_task['title'], 'title')
+        self.assertEqual(new_task['description'], 'description')
+        self.assertEqual(new_task['status'], 'new')
+        self.assertEqual(new_task['planned_completion_date'], None)
+
+    def test_user_can_delete_his_task(self):
+        """test: user can delete his task"""
+
+        user = _create_test_user('user', 'password')
+        token = _get_token(self, user)
+        task = Task.objects.create(user=user)
+        number_of_tasks_before_delete = Task.objects.count()
+
+        url = self.live_server_url + f'/api/tasks/{task.id}/'
+
+        task_headers = {
+            'Authorization': f'Bearer {token}',
+            'Content-Type': 'application/json'
+        }
+
+        requests.delete(url, headers=task_headers)
+
+        number_of_tasks_after_delete = Task.objects.count()
+        self.assertEqual(number_of_tasks_before_delete, number_of_tasks_after_delete + 1)
 
 
 class UserApiTest(LiveServerTestCase):
