@@ -241,7 +241,7 @@ class HistoryApiTest(LiveServerTestCase):
 
         history_request = requests.get(url, headers=headers)
         history = json.loads(history_request.text)
-        print(history)
+        # print(history)
         self.assertEqual(len(history), 2)
 
 
