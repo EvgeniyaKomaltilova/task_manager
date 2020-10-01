@@ -3,7 +3,6 @@ from datetime import date, timedelta
 import requests
 from django.contrib.auth.models import User
 from django.test import TestCase, LiveServerTestCase
-
 from tasks.models import Task, History
 
 
@@ -33,7 +32,7 @@ class TaskModelTest(TestCase):
 class HistoryModelTest(TestCase):
     """History model testing"""
 
-    def test_task_object_was_created(self):
+    def test_history_object_was_created(self):
         """test: history object created when the task object is saved"""
         user = User.objects.create()
         task = Task.objects.create(
@@ -68,7 +67,6 @@ class TaskApiTest(LiveServerTestCase):
 
         Task.objects.create(user=user1)
         Task.objects.create(user=user2)
-        self.assertEqual(Task.objects.count(), 2)
 
         url = self.live_server_url + '/api/tasks/'
         headers = {
@@ -79,6 +77,44 @@ class TaskApiTest(LiveServerTestCase):
         task_request = requests.get(url, headers=headers)
         task = json.loads(task_request.text)
         self.assertEqual(len(task), 1)
+
+    def test_user_can_get_certain_task(self):
+        """test: user can get one task use its id"""
+
+        user = _create_test_user('user', 'password')
+        token = _get_token(self, user)
+
+        task = Task.objects.create(user=user, title='test')
+
+        url = self.live_server_url + f'/api/tasks/{task.id}/'
+        headers = {
+            'Authorization': f'Bearer {token}',
+            'Content-Type': 'application/json'
+        }
+        task_request = requests.get(url, headers=headers)
+        task = json.loads(task_request.text)
+        self.assertEqual(task['user'], user.id)
+        self.assertEqual(task['title'], 'test')
+
+    def test_user_can_not_get_foreign_task(self):
+        """test: user can't get task owned by someone else"""
+
+        user1 = _create_test_user('user', 'password')
+        user2 = _create_test_user('user2', 'password2')
+        token1 = _get_token(self, user1)
+
+        task2 = Task.objects.create(user=user2)
+
+        url2 = self.live_server_url + f'/api/tasks/{task2.id}/'
+        headers = {
+            'Authorization': f'Bearer {token1}',
+            'Content-Type': 'application/json'
+        }
+        task_request2 = requests.get(url2, headers=headers)
+        task2 = json.loads(task_request2.text)
+        self.assertNotIn('user', task2)
+        self.assertNotIn('title', task2)
+
 
     def test_task_created_by_post_request(self):
         """test: task object was created after post request"""
@@ -132,9 +168,7 @@ class TaskApiTest(LiveServerTestCase):
         }
 
         new_task_request = requests.put(url, data=json.dumps(dict), headers=task_headers)
-        print('new_task_request:', new_task_request)
         new_task = json.loads(new_task_request.text)
-        print('new_task: ', new_task)
         self.assertEqual(new_task['title'], 'title')
         self.assertEqual(new_task['description'], 'description')
         self.assertEqual(new_task['status'], 'new')
