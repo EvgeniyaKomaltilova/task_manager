@@ -53,6 +53,10 @@ class HistoryViewSet(viewsets.ModelViewSet):
     serializer_class = HistorySerializer
     filter_backends = [HistoryFilter]
 
+    def get_queryset(self):
+        """user can get history about only his own tasks"""
+        return History.objects.filter(user=self.request.user)
+
 
 class UserViewSet(viewsets.ModelViewSet):
     """View for user api"""

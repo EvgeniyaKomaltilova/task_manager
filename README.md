@@ -19,7 +19,7 @@ Takes username and password, returns json data with username and password of new
 
 * **Success Response:**
 
-  * **Code:** 200 <br />
+  * **Code:** 200 OK <br />
     **Content:** `{ "username" : "some_user_name", "password" : "pbkdf2_sha256$216000$OWZ5pnbgfXd7$gk4HPQSz8pFQ1ruzQ2dO71VpWvmT9quY5b+KoaMVEVs=" }`
 
  **Getting a token**
@@ -74,7 +74,7 @@ Takes username and password, returns json data with username and password of new
 
 * **Success Response:**
 
-  * **Code:** 200 <br />
+  * **Code:** 200 OK <br />
     **Content:** `[ { "title":"some_title",
     "description":"some_description",
     "date_of_creation":"2020-09-30",
@@ -116,7 +116,7 @@ Takes username and password, returns json data with username and password of new
 
 * **Success Response:**
 
-  * **Code:** 200 <br />
+  * **Code:** 200 OK <br />
     **Content:** `[{ "title":"some_title",
     "description":"some_description",
     "date_of_creation":"2020-09-30",
@@ -157,7 +157,7 @@ Takes username and password, returns json data with username and password of new
 
 * **Success Response:**
 
-  * **Code:** 200 <br />
+  * **Code:** 200 OK <br />
     **Content:** `[{ "title":"some_title",
     "description":"some_description",
     "date_of_creation":"2020-09-30",
@@ -192,7 +192,7 @@ Takes username and password, returns json data with username and password of new
 
 * **Success Response:**
 
-  * **Code:** 200 <br />
+  * **Code:** 200 OK <br />
     **Content:** `[{ "title":"some_title",
     "description":"some_description",
     "date_of_creation":"2020-09-30",
@@ -202,10 +202,82 @@ Takes username and password, returns json data with username and password of new
     
 * **Error Response:**
   * **Code:** 401 UNAUTHORIZED <br />
-    **Content:** `{"detail":"Signature has expired."}`
+    **Content:** `{ "detail":"Signature has expired." }`
 
   OR
   
   * **Code:** 404 NOT FOUND <br />
     **Content:** `{ "detail": "Not found." }`
 
+**Delete the task**
+----
+  Takes DELETE request. 
+  Returns status 204.
+
+* **URL:**
+  /api/tasks/`[task_id]`
+
+* **Method:**
+  `DELETE`
+  
+*  **URL Params:**
+  None
+   
+* **Data Params:**
+  None
+
+* **Success Response:**
+
+  * **Code:** 204 NO CONTENT <br />
+    **Content:** ``
+    
+* **Error Response:**
+  * **Code:** 401 UNAUTHORIZED <br />
+    **Content:** `{ "detail":"Signature has expired." }`
+
+  OR
+  
+  * **Code:** 404 NOT FOUND <br />
+    **Content:** `{ "detail": "Not found." }`
+
+**Get task history**
+----
+  Returns json data with history of task editing.
+
+* **URL:**
+  /api/history/
+
+* **Methods:**
+  `GET`
+  
+*  **URL Params:**
+
+   **Required:**
+   `task=[integer]`
+   
+* **Data Params:**
+  None
+
+* **Success Response:**
+
+  * **Code:** 200 OK <br />
+    **Content:** `[{"task":1,
+    "title":"2",
+    "description":"1",
+    "date_of_creation":"2020-10-01",
+    "date_of_change":"2020-10-01T07:22:51.690117Z",
+    "status":"new",
+    "planned_completion_date":"2020-09-30",
+    "user":1},
+    {"task":1,
+    "title":"1",
+    "description":"1",
+    "date_of_creation":"2020-09-30",
+    "date_of_change":"2020-09-30T06:21:06.097135Z",
+    "status":"new",
+    "planned_completion_date":"2020-09-30",
+    "user":1}]`
+    
+* **Error Response:**
+  * **Code:** 401 UNAUTHORIZED <br />
+    **Content:** `{ "detail":"Signature has expired." }`
