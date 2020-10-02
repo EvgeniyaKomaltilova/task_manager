@@ -63,6 +63,11 @@ Takes username and password, returns json data with username and password of new
    `status=[string]`
    
    `planned_completion_date=[string]`
+
+   possible status values:
+   `new` | `planned` | `in progress` | `completed`
+   
+   date format: `YYYY-MM-DD`
    
 * **Data Params:**
   None
