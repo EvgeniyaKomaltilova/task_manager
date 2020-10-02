@@ -208,3 +208,4 @@ Takes username and password, returns json data with username and password of new
   
   * **Code:** 404 NOT FOUND <br />
     **Content:** `{ "detail": "Not found." }`
+
