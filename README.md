@@ -50,7 +50,7 @@ Takes username and password, returns json data with username and password of new
 
 **Get all user tasks**
 ----
-  Returns json data with username and password of new user.
+  Returns json data with details about tasks.
 
 * **URL:**
   /api/tasks/
@@ -85,5 +85,121 @@ Takes username and password, returns json data with username and password of new
     
 * **Error Response:**
 
+  * **Code:** 401 UNAUTHORIZED <br />
+    **Content:** `{"detail":"Signature has expired."}`
+    
+  OR
+
   * **Code:** 400 BAD REQUEST <br />
     **Content:** `{ "non_field_errors": [ "Unable to log in with provided credentials." ] }`
+
+**Get one user task**
+----
+  Returns json data with details about one task.
+
+* **URL:**
+  /api/tasks/`[task_id]`
+
+* **Method:**
+  `GET`
+  
+*  **URL Params:**
+  None
+   
+* **Data Params:**
+  None
+
+* **Success Response:**
+
+  * **Code:** 200 <br />
+    **Content:** `[{ "title":"some_title",
+    "description":"some_description",
+    "date_of_creation":"2020-09-30",
+    "status":"new",
+    "planned_completion_date":"2020-10-30",
+    "user":1 }]`
+    
+* **Error Response:**
+
+  * **Code:** 401 UNAUTHORIZED <br />
+    **Content:** `{"detail":"Signature has expired."}`
+    
+  OR
+
+  * **Code:** 404 NOT FOUND <br />
+    **Content:** `{ "detail": "Not found." }`
+  
+**Create a task**
+----
+  Takes json data with: title, description, status and planned completion date. 
+  Returns json data with details created task.
+
+* **URL:**
+  /api/tasks/
+
+* **Methods:**
+  `POST`
+  
+*  **URL Params:**
+  None
+   
+* **Data Params:**
+  `[{ "title":"some_title",
+    "description":"some_description",
+    "status":"new",
+    "planned_completion_date":"2020-10-30",
+    }]`
+
+* **Success Response:**
+
+  * **Code:** 200 <br />
+    **Content:** `[{ "title":"some_title",
+    "description":"some_description",
+    "date_of_creation":"2020-09-30",
+    "status":"new",
+    "planned_completion_date":"2020-10-30",
+    "user":1 }]`
+    
+* **Error Response:**
+  * **Code:** 401 UNAUTHORIZED <br />
+    **Content:** `{"detail":"Signature has expired."}`
+
+**Update the task**
+----
+  Takes json data with one or more of this: title, description, status, planned completion date. 
+  Returns json data with details about this task.
+
+* **URL:**
+  /api/tasks/`[task_id]`
+
+* **Methods:**
+  `PUT` `PATCH`
+  
+*  **URL Params:**
+  None
+   
+* **Data Params:**
+  `[{ "title":"some_title",
+    "description":"some_description",
+    "status":"new",
+    "planned_completion_date":"2020-10-30",
+    }]`
+
+* **Success Response:**
+
+  * **Code:** 200 <br />
+    **Content:** `[{ "title":"some_title",
+    "description":"some_description",
+    "date_of_creation":"2020-09-30",
+    "status":"new",
+    "planned_completion_date":"2020-10-30",
+    "user":1 }]`
+    
+* **Error Response:**
+  * **Code:** 401 UNAUTHORIZED <br />
+    **Content:** `{"detail":"Signature has expired."}`
+
+  OR
+  
+  * **Code:** 404 NOT FOUND <br />
+    **Content:** `{ "detail": "Not found." }`
