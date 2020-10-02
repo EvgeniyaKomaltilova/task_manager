@@ -1,5 +1,6 @@
+from django.contrib import auth
 from django.db import models
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, AbstractUser
 
 
 class Task(models.Model):

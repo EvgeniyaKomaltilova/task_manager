@@ -20,7 +20,7 @@ Takes username and password, returns json data with username and password of new
 * **Success Response:**
 
   * **Code:** 200 <br />
-    **Content:** `{ "username" : "some_user_name", "password" : "some_password" }`
+    **Content:** `{ "username" : "some_user_name", "password" : "pbkdf2_sha256$216000$OWZ5pnbgfXd7$gk4HPQSz8pFQ1ruzQ2dO71VpWvmT9quY5b+KoaMVEVs=" }`
 
  **Getting a token**
 ----
@@ -82,3 +82,8 @@ Takes username and password, returns json data with username and password of new
     "status":"in progress",
     "planned_completion_date":"2020-10-10",
     "user":1 }]`
+    
+* **Error Response:**
+
+  * **Code:** 400 BAD REQUEST <br />
+    **Content:** `{ "non_field_errors": [ "Unable to log in with provided credentials." ] }`

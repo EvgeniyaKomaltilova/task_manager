@@ -257,9 +257,9 @@ class UserApiTest(LiveServerTestCase):
             'password': 'test_password',
         }
         new_user_request = requests.post(url, data=json.dumps(dict), headers=headers)
-        user = json.loads(new_user_request.text)
-        self.assertEqual(user['username'], 'test_username')
-        self.assertEqual(user['password'], 'test_password')
+        user_dict = json.loads(new_user_request.text)
+        user = User.objects.get(username=user_dict['username'])
+        self.assertEqual(user.username, 'test_username')
 
 
 def _get_token(obj, user):
