@@ -3,6 +3,5 @@ venv/
 db.sqlite3
 __pychache__
 */__pychache__/
-task_manager/settings.py
 *.pyc
 geckodriver.log

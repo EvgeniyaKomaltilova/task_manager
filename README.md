@@ -1,5 +1,18 @@
 # TASK MANAGER API
 
+**Installation**
+----
+Pre-requisites: `docker, git`
+
+
+1. Clone repository: 
+`git clone https://github.com/EvgeniyaKomaltilova/task_manager.git`
+
+1. Go to the project folder
+1. Run `docker-compose up -d --build`
+1. Api will be available at: `0.0.0.0:8000/api`
+
+
 **User registration**
 ----
 Takes username and password, returns json data with username and password of new user.
