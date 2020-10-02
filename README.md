@@ -9,7 +9,8 @@ Pre-requisites: `docker, git`
 `git clone https://github.com/EvgeniyaKomaltilova/task_manager.git`
 
 1. Go to the project folder
-1. Run `docker-compose up -d --build`
+1. Run `docker-compose build`
+1. Run `docker-compose up -d`
 1. Api will be available at: `0.0.0.0:8000/api`
 
 
