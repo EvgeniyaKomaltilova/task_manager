@@ -15,9 +15,7 @@ class TaskSerializer(serializers.ModelSerializer):
             'status',
             'planned_completion_date',
             'user',
-            # 'history',
         )
-    # history = serializers.PrimaryKeyRelatedField(many=True, read_only=True)
 
 
 class HistorySerializer(serializers.ModelSerializer):
@@ -48,10 +46,5 @@ class UserSerializer(serializers.ModelSerializer):
         )
 
     def create(self, validated_data):
-        user = User.objects.create(**validated_data)
-        user.set_password(validated_data['password'])
-        user.save()
+        user = User.objects.create_user(**validated_data)
         return user
-
-    # def create(self, validated_data):
-    #     super().create(self)
