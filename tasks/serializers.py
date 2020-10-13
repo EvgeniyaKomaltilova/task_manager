@@ -27,11 +27,9 @@ class HistorySerializer(serializers.ModelSerializer):
             'task',
             'title',
             'description',
-            'date_of_creation',
             'date_of_change',
             'status',
             'planned_completion_date',
-            'user',
         )
 
 

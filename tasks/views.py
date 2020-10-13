@@ -10,7 +10,11 @@ class HistoryFilter(filters.BaseFilterBackend):
 
     def filter_queryset(self, request, queryset, view):
         """filter history by task id"""
-        return queryset.filter(task=request.GET['task']).order_by('-date_of_change')
+        task = Task.objects.get(id=request.GET['task'])
+        if task.user == request.user:
+            return queryset.filter(task=task).order_by('-date_of_change')
+        else:
+            return []
 
 
 class TaskFilter(filters.BaseFilterBackend):
@@ -52,10 +56,6 @@ class HistoryViewSet(viewsets.ModelViewSet):
     queryset = History.objects.all()
     serializer_class = HistorySerializer
     filter_backends = [HistoryFilter]
-
-    def get_queryset(self):
-        """user can get history about only his own tasks"""
-        return History.objects.filter(user=self.request.user)
 
 
 class UserViewSet(viewsets.ModelViewSet):

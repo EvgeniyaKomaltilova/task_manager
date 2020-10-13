@@ -50,7 +50,7 @@ class HistoryModelTest(TestCase):
         history1 = History.objects.last()
         self.assertEqual(history1.title, 'another title')
         self.assertEqual(history1.description, 'another description')
-        self.assertEqual(history1.date_of_creation, task.date_of_creation)
+        # self.assertEqual(history1.date_of_creation, task.date_of_creation)
         self.assertEqual(history1.status, 'planned')
         self.assertEqual(history1.planned_completion_date, task.planned_completion_date)
 
@@ -242,6 +242,26 @@ class HistoryApiTest(LiveServerTestCase):
         history_request = requests.get(url, headers=headers)
         history = json.loads(history_request.text)
         self.assertEqual(len(history), 2)
+
+    def test_user_cant_get_history_of_foreign_task(self):
+        """test: user can get history objects to certain task"""
+
+        user = _create_test_user('user', 'password')
+        user2 = _create_test_user('user2', 'password2')
+        task = Task.objects.create(user=user2)
+        task.save()
+        token = _get_token(self, user)
+
+        url = self.live_server_url + f'/api/history?task={task.id}'
+
+        headers = {
+            'Authorization': f'Bearer {token}',
+            'Content-Type': 'application/json'
+        }
+
+        history_request = requests.get(url, headers=headers)
+        history = json.loads(history_request.text)
+        self.assertEqual(len(history), 0)
 
 
 class UserApiTest(LiveServerTestCase):

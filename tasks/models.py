@@ -26,10 +26,8 @@ class Task(models.Model):
             task=self,
             title=self.title,
             description=self.description,
-            date_of_creation=self.date_of_creation,
             status=self.status,
             planned_completion_date=self.planned_completion_date,
-            user=self.user
         )
 
 
@@ -41,12 +39,9 @@ class History(models.Model):
                              on_delete=models.CASCADE)
     title = models.CharField(verbose_name='changed task title', max_length=32, null=True)
     description = models.TextField(verbose_name='changed task description', null=True)
-    date_of_creation = models.DateField(verbose_name='date of task creation', auto_now_add=True)
     status = models.CharField(verbose_name='changed task status', max_length=11, null=True)
     planned_completion_date = models.DateField(verbose_name='changed planned task completion date',
                                                null=True, blank=True)
-    user = models.ForeignKey(verbose_name='task history owner', to=User, related_name='histories',
-                             on_delete=models.CASCADE)
 
     def __str__(self):
-        return f'{self.user}-{self.title}-{self.date_of_change}'
+        return f'{self.task.user}-{self.title}-{self.date_of_change}'
